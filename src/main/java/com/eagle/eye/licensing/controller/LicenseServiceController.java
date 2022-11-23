@@ -25,7 +25,6 @@ public class LicenseServiceController {
 
     private LicenseService licenseService;
 
-
     @GetMapping(value = "/{licenseId}")
     public License getLicense(@PathVariable UUID organisationId, @PathVariable UUID licenseId) {
         return licenseService.getLicense(licenseId);
