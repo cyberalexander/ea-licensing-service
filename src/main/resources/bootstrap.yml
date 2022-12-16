@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: ea-licensing-service
+  profiles:
+    active: default
+  cloud:
+    config: enabled
+# discovery:
+#   enabled: true
+#     serviceId: ea-config-service

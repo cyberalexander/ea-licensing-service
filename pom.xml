@@ -155,7 +155,7 @@
                             <outputDirectory>${basedir}/target/dockerfile</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/docker</directory>
+                                    <directory>docker</directory>
                                     <filtering>true</filtering>
                                 </resource>
                             </resources>
