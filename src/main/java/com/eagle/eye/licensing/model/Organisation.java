@@ -10,5 +10,11 @@ import java.util.UUID;
  * @author Aliaksandr_Leanovich
  * @version 1.0
  */
-public record Organisation(UUID id, String name, String contactName, String contactEmail, String contactPhone) {
+public record Organisation(
+        UUID id,
+        String name,
+        String contactName,
+        String contactEmail,
+        String contactPhone
+) {
 }
