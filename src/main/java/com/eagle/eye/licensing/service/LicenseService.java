@@ -17,6 +17,18 @@ import java.util.UUID;
 public class LicenseService {
 
     public License getLicense(UUID licenseId) {
-        return new License(licenseId, UUID.randomUUID(), "Test Product Name", "PerSeat");
+        return new License(
+                licenseId,
+                UUID.randomUUID(),
+                "Test Organisation Name",
+                "Test Contact Name",
+                "Test Contact Phone",
+                "Test Contact Email",
+                "Test Product Name",
+                "PerSeat",
+                100_000,
+                9576,
+                "Test Comment"
+                );
     }
 }
