@@ -1,6 +1,8 @@
 package com.eagle.eye.licensing.service;
 
+import com.eagle.eye.licensing.config.ServiceConfig;
 import com.eagle.eye.licensing.model.License;
+import com.eagle.eye.licensing.repository.LicenseRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -15,6 +17,10 @@ import java.util.UUID;
  */
 @Service
 public class LicenseService {
+
+    private LicenseRepository licenseRepository;
+
+    private ServiceConfig config;
 
     public License getLicense(UUID licenseId) {
         return new License(

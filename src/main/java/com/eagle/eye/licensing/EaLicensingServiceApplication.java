@@ -16,7 +16,10 @@ import org.springframework.web.client.RestTemplate;
  * >>> Should be used {@link EnableDiscoveryClient} or {@link EnableFeignClients}
  */
 @SpringBootApplication
-@EnableDiscoveryClient /* Option 1: Activates the Spring DiscoveryClient for use */
+/*
+  Option 1: Activates the Spring DiscoveryClient for use. See OrganisationDiscoveryClient.java
+ */
+@EnableDiscoveryClient
 /*@EnableFeignClients*/ /* Option 2: Needed to use the FeignClient in your code */
 public class EaLicensingServiceApplication {
 
@@ -25,6 +28,7 @@ public class EaLicensingServiceApplication {
      * The {@link LoadBalanced} annotation tells Spring Cloud to create a Ribbon backed RestTemplate class.
      * The {@link EnableDiscoveryClient} and {@link EnableFeignClients} annotations aren’t needed when using
      * the Ribbon backed RestTemplate and can be removed.
+     * See {@link com.eagle.eye.licensing.client.OrganisationRestTemplateClient}
      *
      * @return instance of Spring Web backed {@link RestTemplate}
      */
