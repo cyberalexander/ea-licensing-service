@@ -20,7 +20,10 @@ import org.springframework.web.client.RestTemplate;
   Option 1: Activates the Spring DiscoveryClient for use. See OrganisationDiscoveryClient.java
  */
 @EnableDiscoveryClient
-/*@EnableFeignClients*/ /* Option 2: Needed to use the FeignClient in your code */
+/*
+   Option 2: Needed to use the FeignClient in your code. See OrganisationFeignClient.java
+*/
+/*@EnableFeignClients*/
 public class EaLicensingServiceApplication {
 
     /**

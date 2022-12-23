@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The Spring DiscoveryClient offers the lowest level of access to Ribbon and the services registered within it.
@@ -51,7 +52,7 @@ public class OrganisationDiscoveryClient {
 
     private DiscoveryClient discoveryClient;
 
-    public Organisation getOrganisation(String organisationId) {
+    public Organisation getOrganisation(UUID organisationId) {
         RestTemplate restTemplate = new RestTemplate();
         List<ServiceInstance> instances = discoveryClient.getInstances("ea-organisation-service");
 

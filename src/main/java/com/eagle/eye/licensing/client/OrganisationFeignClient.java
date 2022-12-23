@@ -25,36 +25,28 @@
 package com.eagle.eye.licensing.client;
 
 import com.eagle.eye.licensing.model.Organisation;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.UUID;
 
 /**
- * Created : 20/12/2022 09:44
+ * Created : 23/12/2022 12:48
  * Project : ea-licensing-service
  * IDE : IntelliJ IDEA
  *
  * @author Aliaksandr_Leanovich
  * @version 1.0
  */
-@Component
-public class OrganisationRestTemplateClient {
+@FeignClient("ea-organisation-service")
+public interface OrganisationFeignClient {
 
-    private RestTemplate restTemplate;
-
-    public OrganisationRestTemplateClient(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
-
-    public Organisation getOrganisation(UUID organisationId) {
-        ResponseEntity<Organisation> restExchange = restTemplate.exchange(
-                "http://ea-organisation-service/v1/organizations/{organizationId}",
-                HttpMethod.GET,
-                null, Organisation.class, organisationId);
-
-        return restExchange.getBody();
-    }
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/v1/organisations/{organisationId}",
+            consumes = "application/json"
+    )
+    Organisation getOrganisation(@PathVariable("organisationId") UUID organisationId);
 }

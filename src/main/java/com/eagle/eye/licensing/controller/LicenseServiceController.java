@@ -1,5 +1,6 @@
 package com.eagle.eye.licensing.controller;
 
+import com.eagle.eye.licensing.config.ServiceConfig;
 import com.eagle.eye.licensing.model.License;
 import com.eagle.eye.licensing.service.LicenseService;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -25,8 +27,15 @@ public class LicenseServiceController {
 
     private LicenseService licenseService;
 
+    private ServiceConfig serviceConfig;
+
     @GetMapping(value = "/{licenseId}")
     public License getLicense(@PathVariable UUID organisationId, @PathVariable UUID licenseId) {
         return licenseService.getLicense(licenseId);
+    }
+
+    @GetMapping
+    public List<License> getLicenses(@PathVariable("organisationId") UUID organisationId) {
+        return List.of(licenseService.getLicense(organisationId));
     }
 }
