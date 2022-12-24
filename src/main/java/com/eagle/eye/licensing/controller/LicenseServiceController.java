@@ -31,11 +31,19 @@ public class LicenseServiceController {
 
     @GetMapping(value = "/{licenseId}")
     public License getLicense(@PathVariable UUID organisationId, @PathVariable UUID licenseId) {
-        return licenseService.getLicense(licenseId);
+        return licenseService.getLicense(organisationId, licenseId, "");
     }
 
     @GetMapping
     public List<License> getLicenses(@PathVariable("organisationId") UUID organisationId) {
-        return List.of(licenseService.getLicense(organisationId));
+        return licenseService.getLicensesByOrganisationId(organisationId);
+    }
+
+    @GetMapping(value = "/{licenseId}/{clientType}")
+    public License getLicenseWithClient(
+            @PathVariable UUID organisationId,
+            @PathVariable UUID licenseId,
+            @PathVariable String clientType) {
+        return licenseService.getLicense(organisationId, licenseId, clientType);
     }
 }

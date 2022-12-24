@@ -10,6 +10,7 @@ import com.eagle.eye.licensing.repository.LicenseRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -35,19 +36,38 @@ public class LicenseService {
     private OrganisationDiscoveryClient organisationDiscoveryClient;
 
     public License getLicense(UUID licenseId) {
+        return licenseRepository.findById(licenseId).orElseThrow();
+    }
+
+    public License getLicense(UUID organisationId, UUID licenseId, String clientType) {
+        License license = licenseRepository.findByOrganisationIdAndLicenseId(organisationId, licenseId);
+        Organisation organisation = retrieveOrganisationInfo(organisationId, clientType);
+
         return new License(
-                licenseId,
-                UUID.randomUUID(),
-                "Test Organisation Name",
-                "Test Contact Name",
-                "Test Contact Phone",
-                "Test Contact Email",
-                "Test Product Name",
-                "PerSeat",
-                100_000,
-                9576,
-                "Test Comment"
+                license.id(),
+                license.organisationId(),
+                organisation.name(),
+                organisation.contactName(),
+                organisation.contactEmail(),
+                organisation.contactPhone(),
+                license.productName(),
+                license.licenseType(),
+                license.licenseMax(),
+                license.licenseAllocated(),
+                config.getExampleProperty()
         );
+    }
+
+    public List<License> getLicensesByOrganisationId(UUID organisationId) {
+        return licenseRepository.findByOrganisationId(organisationId);
+    }
+
+    public void saveLicense(License license) {
+        licenseRepository.save(license);
+    }
+
+    public void deleteLicense(License license) {
+        licenseRepository.deleteById(license.id());
     }
 
     private Organisation retrieveOrganisationInfo(UUID organisationId, String clientType) {
