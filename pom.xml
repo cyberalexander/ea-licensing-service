@@ -40,13 +40,12 @@
 
     <properties>
         <java.version>17</java.version>
+        <spring-cloud.version>2021.0.3</spring-cloud.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <start-class>ccom.eagle.eye.licensing.EaLicensingServiceApplication</start-class>
         <docker.image.name>cyberalexander/ea-licensing-service</docker.image.name>
-        <docker.image.tag>november22</docker.image.tag>
-
-        <spring-cloud.version>2021.0.3</spring-cloud.version>
+        <docker.image.tag>january2023</docker.image.tag>
     </properties>
 
     <dependencyManagement>
@@ -124,11 +123,14 @@
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}</finalName> <!-- added to remove Version from WAR file -->
+
         <plugins>
 
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.0.0</version>
                 <configuration>
                     <excludes>
                         <exclude>
@@ -142,7 +144,9 @@
             <!-- We use the Resources plugin to filer Dockerfile and run.sh, it inserts actual JAR filename -->
             <!-- The final Dockerfile will be created in target/dockerfile/Dockerfile -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
@@ -152,10 +156,10 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/dockerfile</outputDirectory>
+                            <outputDirectory>${basedir}/target/docker</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>docker</directory>
+                                    <directory>src/main/docker</directory>
                                     <filtering>true</filtering>
                                 </resource>
                             </resources>
@@ -170,7 +174,7 @@
                 <version>1.2.2</version>
                 <configuration>
                     <imageName>${docker.image.name}:${docker.image.tag}</imageName>
-                    <dockerDirectory>${basedir}/target/dockerfile</dockerDirectory>
+                    <dockerDirectory>${basedir}/target/docker</dockerDirectory>
                     <resources>
                         <resource>
                             <targetPath>/</targetPath>
