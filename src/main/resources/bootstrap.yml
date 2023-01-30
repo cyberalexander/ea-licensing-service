@@ -4,7 +4,7 @@ spring:
   profiles:
     active: default
   cloud:
-    config: enabled
-# discovery:
-#   enabled: true
-#     serviceId: ea-config-service
+    config:
+      discovery:
+        enabled: true
+        service-id: ea-config-server
