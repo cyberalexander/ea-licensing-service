@@ -23,7 +23,7 @@ import org.springframework.web.client.RestTemplate;
 /*
    Option 2: Needed to use the FeignClient in your code. See OrganisationFeignClient.java
 */
-/*@EnableFeignClients*/
+@EnableFeignClients
 public class EaLicensingServiceApplication {
 
     /**
