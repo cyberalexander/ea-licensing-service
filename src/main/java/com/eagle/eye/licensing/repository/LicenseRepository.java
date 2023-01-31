@@ -44,5 +44,5 @@ public interface LicenseRepository extends CrudRepository<License, UUID> {
 
     List<License> findByOrganisationId(UUID organisationId);
 
-    License findByOrganisationIdAndLicenseId(UUID organisationId, UUID licenseId);
+    License findByOrganisationIdAndId(UUID organisationId, UUID licenseId);
 }

@@ -40,7 +40,7 @@ public class LicenseService {
     }
 
     public License getLicense(UUID organisationId, UUID licenseId, String clientType) {
-        License license = licenseRepository.findByOrganisationIdAndLicenseId(organisationId, licenseId);
+        License license = licenseRepository.findByOrganisationIdAndId(organisationId, licenseId);
         Organisation organisation = retrieveOrganisationInfo(organisationId, clientType);
 
         return new License(
