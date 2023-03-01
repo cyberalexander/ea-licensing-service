@@ -1,12 +1,24 @@
+# application bootstrap configuration
 spring:
+  application:
+    name: ea-licensing-service
+  profiles:
+    active: default
   config:
     import: optional:configserver:http://localhost:8888
 
+# eureka configuration
 eureka:
   instance:
-    prefer-ip-address: true  #register the IP of the service rather than the server name
+    prefer-ip-address: true                                 #register the IP of the service rather than the server name.
   client:
-    register-with-eureka: true #register the service with Eureka
-    fetch-registry: true #fetch a local copy of the registry, cache the registry locally instead of calling the Eureka service with every lookup
+    register-with-eureka: true                              #register the service with Eureka
+    fetch-registry: true                                    #fetch a local copy of the registry, cache the registry locally instead of calling the Eureka service with every lookup
     service-url:
-      default-zone: http://localhost:8761/eureka/ #location of the Eureka Service
+      default-zone: http://localhost:8761/eureka/           #location of the Eureka Service
+
+logging:
+  level:
+    root: info
+server:
+  port: 8282
