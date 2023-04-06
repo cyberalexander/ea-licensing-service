@@ -22,3 +22,6 @@ logging:
     root: info
 server:
   port: 8282
+
+encrypt:
+  key: APODNU3093r2rbjzxcn09u213asdhy08WRFH                  # the key is used by config server to encrypt/decrypt sensitive data
