@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022 cyberalexander
+ * Copyright (c) 2022-2023 CyberAlexander
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ import java.util.UUID;
  * Project : ea-licensing-service
  * IDE : IntelliJ IDEA
  *
- * @author Aliaksandr_Leanovich
+ * @author CyberAlexander
  * @version 1.0
  */
 @FeignClient("ea-organisation-service")

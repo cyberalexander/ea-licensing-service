@@ -2,7 +2,7 @@
 <!--
  ~ MIT License
  ~
- ~ Copyright (c) 2022 cyberalexander
+ ~ Copyright (c) 2022-2023 CyberAlexander
  ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
  ~ of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@
 
     <groupId>com.eagle.eye</groupId>
     <artifactId>ea-licensing-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>2023.04.07-SNAPSHOT</version>
     <name>Eagle Eye Licensing Service</name>
     <description>Licensing Service</description>
 
@@ -46,7 +46,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <start-class>ccom.eagle.eye.licensing.EaLicensingServiceApplication</start-class>
         <docker.image.name>cyberalexander/ea-licensing-service</docker.image.name>
-        <docker.image.tag>january2023</docker.image.tag>
+        <docker.image.tag>april2023</docker.image.tag>
     </properties>
 
     <dependencyManagement>
