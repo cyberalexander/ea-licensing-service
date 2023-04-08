@@ -11,3 +11,8 @@ spring:
 
 example:
   property: "The value taken from test properties."
+
+# application configuration
+logging:
+  level:
+    root: debug

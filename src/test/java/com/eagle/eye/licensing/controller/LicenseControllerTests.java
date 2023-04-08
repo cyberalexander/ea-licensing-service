@@ -22,40 +22,80 @@
  * SOFTWARE.
  */
 
-package com.eagle.eye.licensing.config;
+package com.eagle.eye.licensing.controller;
 
+import com.eagle.eye.licensing.config.ServiceConfig;
+import com.eagle.eye.licensing.service.LicenseService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
+import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Objects;
 
 /**
- * Created : 06/04/2023 09:05
+ * Created : 07/04/2023 09:29
  * Project : ea-licensing-service
  * IDE : IntelliJ IDEA
  *
- * @author CyberAlexander
+ * @author Aliaksandr_Leanovich
  * @version 1.0
  */
 @Slf4j
-@SpringBootTest
-@ActiveProfiles({"test"})
-class ServiceConfigTests {
+@ActiveProfiles(value = {"test"})
+@WebMvcTest(controllers = {LicenseController.class})
+class LicenseControllerTests {
+
+    private static final EasyRandom EASY_RANDOM = new EasyRandom();
 
     @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper mapper;
+
+    @MockBean
+    private LicenseService licenseService;
+
+    @MockBean
     private ServiceConfig serviceConfig;
 
+    @Autowired
+    @InjectMocks
+    private LicenseController controller;
+
     @Test
-    void testGetExampleProperty() {
-        log.info("ExampleProperty: [{}]", serviceConfig.getExampleProperty());
-        Assertions.assertThat(serviceConfig.getExampleProperty()).isNotNull();
+    void testControllerInstantiated() {
+        log.info("{} instantiated : {}", LicenseController.class.getName(), !Objects.isNull(controller));
     }
 
     @Test
-    void testGetExampleProperty_ValueTakenFromTestProperties() {
-        log.info("ExampleProperty: [{}]", serviceConfig.getExampleProperty());
-        Assertions.assertThat(serviceConfig.getExampleProperty()).isEqualTo("The value taken from test properties.");
+    void testGetLicense() {
+    }
+
+    @Test
+    void testGetLicenses() {
+    }
+
+    @Test
+    void testGetLicenseWithClient() {
+    }
+
+    @Test
+    void testUpdateLicense() {
+    }
+
+    @Test
+    void testSaveLicense() {
+    }
+
+    @Test
+    void testDeleteLicense() {
     }
 }

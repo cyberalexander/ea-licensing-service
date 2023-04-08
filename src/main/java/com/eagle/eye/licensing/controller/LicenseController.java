@@ -56,7 +56,7 @@ import java.util.UUID;
 @RestController
 @AllArgsConstructor
 @RequestMapping(path = "/v1/organisations/{organisationId}/licenses", produces = MediaType.APPLICATION_JSON_VALUE)
-public class LicenseServiceController {
+public class LicenseController {
 
     private LicenseService licenseService;
 
