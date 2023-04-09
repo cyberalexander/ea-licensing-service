@@ -25,19 +25,30 @@
 package com.eagle.eye.licensing.controller;
 
 import com.eagle.eye.licensing.config.ServiceConfig;
+import com.eagle.eye.licensing.model.License;
 import com.eagle.eye.licensing.service.LicenseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created : 07/04/2023 09:29
@@ -76,7 +87,25 @@ class LicenseControllerTests {
     }
 
     @Test
+    @SneakyThrows
     void testGetLicense() {
+        License expected = EASY_RANDOM.nextObject(License.class);
+
+        Mockito.when(licenseService.getLicense(Mockito.any(), Mockito.eq(expected.getId()), Mockito.any())).thenReturn(expected);
+
+        mockMvc.perform(
+                        get(
+                                "/v1/organisations/{organisationId}/licenses/{licenseId}",
+                                UUID.randomUUID(),
+                                expected.getId()
+                        ).contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").hasJsonPath())
+                .andExpect(jsonPath("$.organisationId").hasJsonPath())
+                .andExpect(jsonPath("$.productName").hasJsonPath())
+                .andExpect(jsonPath("$.contactName").hasJsonPath());
     }
 
     @Test
