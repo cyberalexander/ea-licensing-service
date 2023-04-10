@@ -68,16 +68,16 @@ public class LicenseService {
         Organisation organisation = retrieveOrganisationInfo(organisationId, clientType);
 
         return new License(
-                license.id(),
-                license.organisationId(),
+                license.getId(),
+                license.getOrganisationId(),
                 organisation.name(),
                 organisation.contactName(),
                 organisation.contactEmail(),
                 organisation.contactPhone(),
-                license.productName(),
-                license.licenseType(),
-                license.licenseMax(),
-                license.licenseAllocated(),
+                license.getProductName(),
+                license.getLicenseType(),
+                license.getLicenseMax(),
+                license.getLicenseAllocated(),
                 config.getExampleProperty()
         );
     }
@@ -91,7 +91,7 @@ public class LicenseService {
     }
 
     public void deleteLicense(License license) {
-        licenseRepository.deleteById(license.id());
+        licenseRepository.deleteById(license.getId());
     }
 
     private Organisation retrieveOrganisationInfo(UUID organisationId, String clientType) {
