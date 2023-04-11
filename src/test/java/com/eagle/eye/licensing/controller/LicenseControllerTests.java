@@ -33,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -41,8 +42,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -55,15 +56,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Project : ea-licensing-service
  * IDE : IntelliJ IDEA
  *
- * @author Aliaksandr_Leanovich
+ * @author CyberAlexander
  * @version 1.0
  */
 @Slf4j
 @ActiveProfiles(value = {"test"})
 @WebMvcTest(controllers = {LicenseController.class})
 class LicenseControllerTests {
+    private static final String LICENSES_API = "/v1/organisations/{organisationId}/licenses";
 
-    private static final EasyRandom EASY_RANDOM = new EasyRandom();
+    private static final EasyRandom R = new EasyRandom();
 
     @Autowired
     private MockMvc mockMvc;
@@ -89,27 +91,52 @@ class LicenseControllerTests {
     @Test
     @SneakyThrows
     void testGetLicense() {
-        License expected = EASY_RANDOM.nextObject(License.class);
+        License expected = R.nextObject(License.class);
 
         Mockito.when(licenseService.getLicense(Mockito.any(), Mockito.eq(expected.getId()), Mockito.any())).thenReturn(expected);
 
-        mockMvc.perform(
-                        get(
-                                "/v1/organisations/{organisationId}/licenses/{licenseId}",
-                                UUID.randomUUID(),
-                                expected.getId()
-                        ).contentType(MediaType.APPLICATION_JSON)
-                )
+        mockMvc.perform(get(LICENSES_API.concat("/{licenseId}"), UUID.randomUUID(), expected.getId())
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").hasJsonPath())
                 .andExpect(jsonPath("$.organisationId").hasJsonPath())
+                .andExpect(jsonPath("$.organizationName").hasJsonPath())
+                .andExpect(jsonPath("$.contactName").hasJsonPath())
+                .andExpect(jsonPath("$.contactPhone").hasJsonPath())
+                .andExpect(jsonPath("$.contactEmail").hasJsonPath())
                 .andExpect(jsonPath("$.productName").hasJsonPath())
-                .andExpect(jsonPath("$.contactName").hasJsonPath());
+                .andExpect(jsonPath("$.licenseType").hasJsonPath())
+                .andExpect(jsonPath("$.licenseMax").hasJsonPath())
+                .andExpect(jsonPath("$.licenseAllocated").hasJsonPath())
+                .andExpect(jsonPath("$.comment").hasJsonPath());
     }
 
     @Test
+    @SneakyThrows
+    void testGetLicense_validateContentEqual() {
+        License expected = R.nextObject(License.class);
+
+        Mockito.when(licenseService.getLicense(Mockito.any(), Mockito.eq(expected.getId()), Mockito.any())).thenReturn(expected);
+
+        mockMvc.perform(get(LICENSES_API.concat("/{licenseId}"), UUID.randomUUID(), expected.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(mapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    @SneakyThrows
     void testGetLicenses() {
+        List<License> expected = List.of(R.nextObject(License.class));
+
+        Mockito.when(licenseService.getLicensesByOrganisationId(Mockito.any())).thenReturn(expected);
+
+        mockMvc.perform(get(LICENSES_API, UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(mapper.writeValueAsString(expected)));
     }
 
     @Test
