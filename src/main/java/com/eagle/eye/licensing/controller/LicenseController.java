@@ -81,9 +81,11 @@ public class LicenseController {
     }
 
     @PutMapping(value = "/{licenseId}")
-    public void updateLicense(@PathVariable("licenseId") UUID licenseId, @RequestBody License license) {
-        log.debug("Updating license:{}", licenseId);
-        licenseService.saveLicense(license);
+    public License updateLicense(@PathVariable("licenseId") UUID licenseId, @RequestBody License toUpdate) {
+        log.debug("Updating license:{}", toUpdate);
+        License updated = licenseService.saveLicense(toUpdate);
+        log.debug("Updated license:{}", updated);
+        return updated;
     }
 
     @PostMapping

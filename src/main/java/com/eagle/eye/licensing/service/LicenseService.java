@@ -86,8 +86,8 @@ public class LicenseService {
         return licenseRepository.findByOrganisationId(organisationId);
     }
 
-    public void saveLicense(License license) {
-        licenseRepository.save(license);
+    public License saveLicense(License license) {
+        return licenseRepository.save(license);
     }
 
     public void deleteLicense(License license) {

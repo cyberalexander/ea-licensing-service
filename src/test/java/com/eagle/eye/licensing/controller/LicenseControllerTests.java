@@ -47,6 +47,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -93,9 +94,9 @@ class LicenseControllerTests {
     void testGetLicense() {
         License expected = R.nextObject(License.class);
 
-        Mockito.when(licenseService.getLicense(Mockito.any(), Mockito.eq(expected.getId()), Mockito.any())).thenReturn(expected);
+        Mockito.when(licenseService.getLicense(expected.getOrganisationId(), expected.getId(), "")).thenReturn(expected);
 
-        mockMvc.perform(get(LICENSES_API.concat("/{licenseId}"), UUID.randomUUID(), expected.getId())
+        mockMvc.perform(get(LICENSES_API.concat("/{licenseId}"), expected.getOrganisationId(), expected.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -117,9 +118,11 @@ class LicenseControllerTests {
     void testGetLicense_validateContentEqual() {
         License expected = R.nextObject(License.class);
 
-        Mockito.when(licenseService.getLicense(Mockito.any(), Mockito.eq(expected.getId()), Mockito.any())).thenReturn(expected);
+        Mockito.when(licenseService.getLicense(
+                Mockito.eq(expected.getOrganisationId()), Mockito.eq(expected.getId()), Mockito.any()))
+                .thenReturn(expected);
 
-        mockMvc.perform(get(LICENSES_API.concat("/{licenseId}"), UUID.randomUUID(), expected.getId())
+        mockMvc.perform(get(LICENSES_API.concat("/{licenseId}"), expected.getOrganisationId(), expected.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -143,13 +146,14 @@ class LicenseControllerTests {
     @SneakyThrows
     void testGetLicenseWithFeignClient() {
         String feignClientType = "feign";
-        UUID organisationId = UUID.randomUUID();
         License expected = R.nextObject(License.class);
 
-        Mockito.when(licenseService.getLicense(organisationId, expected.getId(), feignClientType)).thenReturn(expected);
+        Mockito.when(licenseService.getLicense(
+                expected.getOrganisationId(), expected.getId(), feignClientType))
+                .thenReturn(expected);
 
         mockMvc.perform(get(LICENSES_API.concat("/{licenseId}/{clientType}"),
-                organisationId, expected.getId(), feignClientType)
+                expected.getOrganisationId(), expected.getId(), feignClientType)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -160,14 +164,15 @@ class LicenseControllerTests {
     @SneakyThrows
     void testGetLicenseWithRestClient() {
         String feignClientType = "rest";
-        UUID organisationId = UUID.randomUUID();
         License expected = R.nextObject(License.class);
 
-        Mockito.when(licenseService.getLicense(organisationId, expected.getId(), feignClientType)).thenReturn(expected);
+        Mockito.when(licenseService.getLicense(
+                expected.getOrganisationId(), expected.getId(), feignClientType))
+                .thenReturn(expected);
 
         mockMvc.perform(get(LICENSES_API.concat("/{licenseId}/{clientType}"),
-                        organisationId, expected.getId(), feignClientType)
-                        .contentType(MediaType.APPLICATION_JSON))
+                expected.getOrganisationId(), expected.getId(), feignClientType)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(mapper.writeValueAsString(expected)));
@@ -183,8 +188,8 @@ class LicenseControllerTests {
         Mockito.when(licenseService.getLicense(organisationId, expected.getId(), feignClientType)).thenReturn(expected);
 
         mockMvc.perform(get(LICENSES_API.concat("/{licenseId}/{clientType}"),
-                        organisationId, expected.getId(), feignClientType)
-                        .contentType(MediaType.APPLICATION_JSON))
+                organisationId, expected.getId(), feignClientType)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(mapper.writeValueAsString(expected)));
@@ -207,7 +212,18 @@ class LicenseControllerTests {
     }
 
     @Test
+    @SneakyThrows
     void testUpdateLicense() {
+        License toUpdate = R.nextObject(License.class);
+
+        Mockito.when(licenseService.saveLicense(toUpdate)).thenReturn(toUpdate);
+
+        mockMvc.perform(put(LICENSES_API.concat("/{licenseId}"), toUpdate.getOrganisationId(), toUpdate.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(toUpdate)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(mapper.writeValueAsString(toUpdate)));
     }
 
     @Test
