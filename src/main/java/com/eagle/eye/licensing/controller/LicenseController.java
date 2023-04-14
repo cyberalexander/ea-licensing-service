@@ -90,14 +90,14 @@ public class LicenseController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveLicense(@RequestBody License license) {
-        licenseService.saveLicense(license);
+    public License saveLicense(@RequestBody License license) {
+        return licenseService.saveLicense(license);
     }
 
     @DeleteMapping(value = "/{licenseId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteLicense(@PathVariable("licenseId") UUID licenseId, @RequestBody License license) {
-        log.debug("Deleting License:{}", licenseId);
+        log.warn("Deleting License:{}", licenseId);
         licenseService.deleteLicense(license);
     }
 }

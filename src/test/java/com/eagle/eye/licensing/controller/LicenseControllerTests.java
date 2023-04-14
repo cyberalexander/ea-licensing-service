@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -46,7 +45,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -227,10 +228,28 @@ class LicenseControllerTests {
     }
 
     @Test
+    @SneakyThrows
     void testSaveLicense() {
+        License toCreate = R.nextObject(License.class);
+
+        Mockito.when(licenseService.saveLicense(toCreate)).thenReturn(toCreate);
+
+        mockMvc.perform(post(LICENSES_API, toCreate.getOrganisationId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(toCreate)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(mapper.writeValueAsString(toCreate)));
     }
 
     @Test
+    @SneakyThrows
     void testDeleteLicense() {
+        License toDelete = R.nextObject(License.class);
+
+        mockMvc.perform(delete(LICENSES_API.concat("/{licenseId}"), toDelete.getOrganisationId(), toDelete.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(toDelete)))
+                .andExpect(status().isNoContent());
     }
 }
