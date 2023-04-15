@@ -30,6 +30,7 @@ import com.eagle.eye.licensing.service.LicenseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -87,7 +88,8 @@ class LicenseControllerTests {
 
     @Test
     void testControllerInstantiated() {
-        log.info("{} instantiated : {}", LicenseController.class.getName(), !Objects.isNull(controller));
+        log.info("{} instantiated : [{}]", LicenseController.class.getName(), controller);
+        Assertions.assertThat(controller).isNotNull();
     }
 
     @Test
