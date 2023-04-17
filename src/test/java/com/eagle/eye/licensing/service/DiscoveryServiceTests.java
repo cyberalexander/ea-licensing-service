@@ -25,22 +25,26 @@
 package com.eagle.eye.licensing.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 /**
  * Created : 16/04/2023 10:39
  * Project : ea-licensing-service
  * IDE : IntelliJ IDEA
  *
- * @author Aliaksandr_Leanovich
+ * @author CyberAlexander
  * @version 1.0
  */
 @Slf4j
@@ -59,7 +63,20 @@ class DiscoveryServiceTests {
     private DiscoveryService service;
 
     @Test
-    void testGetEurekaServices() {
+    void testDiscoveryServiceInstantiated() {
+        log.info("{} instantiated : [{}]", DiscoveryService.class.getName(), service);
+        Assertions.assertThat(service).isNotNull();
+    }
 
+    @Test
+    void testGetEurekaServices() {
+        List<String> eurekaServices = service.getEurekaServices();
+        Assertions.assertThat(eurekaServices).isNotNull();
+    }
+
+    @Test
+    void testGetEurekaServices_verifyMockExecuted() {
+        service.getEurekaServices();
+        Mockito.verify(discoveryClient).getServices();
     }
 }
