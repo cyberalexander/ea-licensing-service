@@ -166,15 +166,15 @@ class LicenseControllerTests {
     @Test
     @SneakyThrows
     void testGetLicenseWithRestClient() {
-        String feignClientType = "rest";
+        String restClientType = "rest";
         License expected = R.nextObject(License.class);
 
         Mockito.when(licenseService.getLicense(
-                expected.getOrganisationId(), expected.getId(), feignClientType))
+                expected.getOrganisationId(), expected.getId(), restClientType))
                 .thenReturn(expected);
 
         mockMvc.perform(get(LICENSES_API.concat("/{licenseId}/{clientType}"),
-                expected.getOrganisationId(), expected.getId(), feignClientType)
+                expected.getOrganisationId(), expected.getId(), restClientType)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -184,14 +184,14 @@ class LicenseControllerTests {
     @Test
     @SneakyThrows
     void testGetLicenseWithDiscoveryClient() {
-        String feignClientType = "discovery";
+        String discoveryClientType = "discovery";
         UUID organisationId = UUID.randomUUID();
         License expected = R.nextObject(License.class);
 
-        Mockito.when(licenseService.getLicense(organisationId, expected.getId(), feignClientType)).thenReturn(expected);
+        Mockito.when(licenseService.getLicense(organisationId, expected.getId(), discoveryClientType)).thenReturn(expected);
 
         mockMvc.perform(get(LICENSES_API.concat("/{licenseId}/{clientType}"),
-                organisationId, expected.getId(), feignClientType)
+                organisationId, expected.getId(), discoveryClientType)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -201,14 +201,14 @@ class LicenseControllerTests {
     @Test
     @SneakyThrows
     void testGetLicenseWithNonSupportedClient() {
-        String feignClientType = "Non Supported";
+        String unsupportedClientType = "Not Supported";
         UUID organisationId = UUID.randomUUID();
         License expected = R.nextObject(License.class);
 
-        Mockito.when(licenseService.getLicense(organisationId, expected.getId(), feignClientType)).thenReturn(null);
+        Mockito.when(licenseService.getLicense(organisationId, expected.getId(), unsupportedClientType)).thenReturn(null);
 
         mockMvc.perform(get(LICENSES_API.concat("/{licenseId}/{clientType}"),
-                        organisationId, expected.getId(), feignClientType)
+                        organisationId, expected.getId(), unsupportedClientType)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""));

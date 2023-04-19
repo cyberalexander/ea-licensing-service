@@ -29,6 +29,7 @@ import com.eagle.eye.licensing.client.OrganisationFeignClient;
 import com.eagle.eye.licensing.client.OrganisationRestTemplateClient;
 import com.eagle.eye.licensing.config.ServiceConfig;
 import com.eagle.eye.licensing.model.License;
+import com.eagle.eye.licensing.model.Organisation;
 import com.eagle.eye.licensing.repository.LicenseRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -43,8 +44,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.UUID;
 
 /**
  * Created : 18/04/2023 09:06
@@ -95,5 +95,26 @@ class LicenseServiceTests {
 
         Assertions.assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> service.getLicense(expected.getId()));
+    }
+
+    @Test
+    void testGetLicenseWithHttpClient_ValidateDefaultClientInvoked() {
+        License expected = R.nextObject(License.class);
+        Organisation organisation = new Organisation(
+                UUID.randomUUID(),
+                "name",
+                "contactName",
+                "contactEmail",
+                "contactPhone"
+        );
+
+        Mockito.when(licenseRepository.findByOrganisationIdAndId(expected.getOrganisationId(), expected.getId()))
+                .thenReturn(expected);
+        Mockito.when(organisationRestTemplateClient.getOrganisation(expected.getOrganisationId()))
+                .thenReturn(organisation);
+
+        service.getLicense(expected.getOrganisationId(), expected.getId(), "Non Supported");
+
+        Mockito.verify(organisationRestTemplateClient).getOrganisation(expected.getOrganisationId());
     }
 }
