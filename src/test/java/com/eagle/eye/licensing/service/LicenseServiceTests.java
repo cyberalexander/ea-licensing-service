@@ -100,13 +100,8 @@ class LicenseServiceTests {
     @Test
     void testGetLicenseWithHttpClient_ValidateDefaultClientInvoked() {
         License expected = R.nextObject(License.class);
-        Organisation organisation = new Organisation(
-                UUID.randomUUID(),
-                "name",
-                "contactName",
-                "contactEmail",
-                "contactPhone"
-        );
+        Organisation organisation = new Organisation(UUID.randomUUID(), "name", "contactName",
+                "contactEmail", "contactPhone");
 
         Mockito.when(licenseRepository.findByOrganisationIdAndId(expected.getOrganisationId(), expected.getId()))
                 .thenReturn(expected);
@@ -116,5 +111,53 @@ class LicenseServiceTests {
         service.getLicense(expected.getOrganisationId(), expected.getId(), "Non Supported");
 
         Mockito.verify(organisationRestTemplateClient).getOrganisation(expected.getOrganisationId());
+    }
+
+    @Test
+    void testGetLicenseWithHttpClient_ValidateFeignClientInvoked() {
+        License expected = R.nextObject(License.class);
+        Organisation organisation = new Organisation(UUID.randomUUID(), "name", "contactName",
+                "contactEmail", "contactPhone");
+
+        Mockito.when(licenseRepository.findByOrganisationIdAndId(expected.getOrganisationId(), expected.getId()))
+                .thenReturn(expected);
+        Mockito.when(organisationFeignClient.getOrganisation(expected.getOrganisationId()))
+                .thenReturn(organisation);
+
+        service.getLicense(expected.getOrganisationId(), expected.getId(), "feign");
+
+        Mockito.verify(organisationFeignClient).getOrganisation(expected.getOrganisationId());
+    }
+
+    @Test
+    void testGetLicenseWithHttpClient_ValidateRestClientInvoked() {
+        License expected = R.nextObject(License.class);
+        Organisation organisation = new Organisation(UUID.randomUUID(), "name", "contactName",
+                "contactEmail", "contactPhone");
+
+        Mockito.when(licenseRepository.findByOrganisationIdAndId(expected.getOrganisationId(), expected.getId()))
+                .thenReturn(expected);
+        Mockito.when(organisationRestTemplateClient.getOrganisation(expected.getOrganisationId()))
+                .thenReturn(organisation);
+
+        service.getLicense(expected.getOrganisationId(), expected.getId(), "rest");
+
+        Mockito.verify(organisationRestTemplateClient).getOrganisation(expected.getOrganisationId());
+    }
+
+    @Test
+    void testGetLicenseWithHttpClient_ValidateDiscoveryClientInvoked() {
+        License expected = R.nextObject(License.class);
+        Organisation organisation = new Organisation(UUID.randomUUID(), "name", "contactName",
+                "contactEmail", "contactPhone");
+
+        Mockito.when(licenseRepository.findByOrganisationIdAndId(expected.getOrganisationId(), expected.getId()))
+                .thenReturn(expected);
+        Mockito.when(organisationDiscoveryClient.getOrganisation(expected.getOrganisationId()))
+                .thenReturn(organisation);
+
+        service.getLicense(expected.getOrganisationId(), expected.getId(), "discovery");
+
+        Mockito.verify(organisationDiscoveryClient).getOrganisation(expected.getOrganisationId());
     }
 }
