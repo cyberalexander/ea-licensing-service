@@ -195,4 +195,6 @@ class LicenseServiceTests {
 
         Mockito.verify(organisationDiscoveryClient).getOrganisation(expected.getOrganisationId());
     }
+
+
 }
