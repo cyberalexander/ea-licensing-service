@@ -40,7 +40,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -55,6 +57,7 @@ import java.util.UUID;
  * @version 1.0
  */
 @Slf4j
+@ActiveProfiles({"test"})
 @ExtendWith(MockitoExtension.class)
 class LicenseServiceTests {
     private static final EasyRandom R = new EasyRandom();
@@ -95,6 +98,38 @@ class LicenseServiceTests {
 
         Assertions.assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> service.getLicense(expected.getId()));
+    }
+
+    @Test
+    void testGetLicenseWithHttpClient_ValidateConfigInvoked() {
+        License expected = R.nextObject(License.class);
+        Organisation organisation = new Organisation(UUID.randomUUID(), "name", "contactName",
+                "contactEmail", "contactPhone");
+
+        Mockito.when(licenseRepository.findByOrganisationIdAndId(expected.getOrganisationId(), expected.getId()))
+                .thenReturn(expected);
+        Mockito.when(organisationRestTemplateClient.getOrganisation(expected.getOrganisationId()))
+                .thenReturn(organisation);
+
+        License actual = service.getLicense(expected.getOrganisationId(), expected.getId(), "Non Supported");
+
+        Mockito.verify(config).getExampleProperty();
+    }
+
+    @Test
+    void testGetLicenseWithHttpClient_ValidateRepositoryInvoked() {
+        License expected = R.nextObject(License.class);
+        Organisation organisation = new Organisation(UUID.randomUUID(), "name", "contactName",
+                "contactEmail", "contactPhone");
+
+        Mockito.when(licenseRepository.findByOrganisationIdAndId(expected.getOrganisationId(), expected.getId()))
+                .thenReturn(expected);
+        Mockito.when(organisationRestTemplateClient.getOrganisation(expected.getOrganisationId()))
+                .thenReturn(organisation);
+
+        service.getLicense(expected.getOrganisationId(), expected.getId(), "Non Supported");
+
+        Mockito.verify(licenseRepository).findByOrganisationIdAndId(expected.getOrganisationId(), expected.getId());
     }
 
     @Test
