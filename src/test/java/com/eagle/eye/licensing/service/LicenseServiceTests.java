@@ -40,10 +40,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
@@ -110,8 +110,6 @@ class LicenseServiceTests {
                 .thenReturn(expected);
         Mockito.when(organisationRestTemplateClient.getOrganisation(expected.getOrganisationId()))
                 .thenReturn(organisation);
-
-        License actual = service.getLicense(expected.getOrganisationId(), expected.getId(), "Non Supported");
 
         Mockito.verify(config).getExampleProperty();
     }
@@ -196,5 +194,33 @@ class LicenseServiceTests {
         Mockito.verify(organisationDiscoveryClient).getOrganisation(expected.getOrganisationId());
     }
 
+    @Test
+    void testGetLicensesByOrganisationId() {
+        License expected = R.nextObject(License.class);
+        List<License> expectedList = List.of(expected);
 
+        Mockito.when(licenseRepository.findByOrganisationId(expected.getOrganisationId())).thenReturn(expectedList);
+
+        List<License> actual = service.getLicensesByOrganisationId(expected.getOrganisationId());
+
+        Assertions.assertThat(actual).isEqualTo(expectedList);
+    }
+
+    @Test
+    void testGetLicensesByOrganisationId_ValidateRepositoryInvoked() {
+        License expected = R.nextObject(License.class);
+        List<License> expectedList = List.of(expected);
+
+        Mockito.when(licenseRepository.findByOrganisationId(expected.getOrganisationId())).thenReturn(expectedList);
+
+        Mockito.verify(licenseRepository).findByOrganisationId(expected.getOrganisationId());
+    }
+
+    @Test
+    void testSaveLicense() {
+    }
+
+    @Test
+    void testDeleteLicense() {
+    }
 }
