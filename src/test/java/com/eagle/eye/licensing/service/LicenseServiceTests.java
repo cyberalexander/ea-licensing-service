@@ -111,6 +111,8 @@ class LicenseServiceTests {
         Mockito.when(organisationRestTemplateClient.getOrganisation(expected.getOrganisationId()))
                 .thenReturn(organisation);
 
+        service.getLicense(expected.getOrganisationId(), expected.getId(), "Non Supported");
+
         Mockito.verify(config).getExampleProperty();
     }
 
@@ -213,14 +215,25 @@ class LicenseServiceTests {
 
         Mockito.when(licenseRepository.findByOrganisationId(expected.getOrganisationId())).thenReturn(expectedList);
 
+        service.getLicensesByOrganisationId(expected.getOrganisationId());
+
         Mockito.verify(licenseRepository).findByOrganisationId(expected.getOrganisationId());
     }
 
     @Test
     void testSaveLicense() {
+        License toSave = R.nextObject(License.class);
+
+        Mockito.when(licenseRepository.save(toSave)).thenReturn(toSave);
+
+        License saved = service.saveLicense(toSave);
+        Assertions.assertThat(toSave).isEqualTo(saved);
     }
 
     @Test
     void testDeleteLicense() {
+        License toDelete = R.nextObject(License.class);
+        service.deleteLicense(toDelete);
+        Mockito.verify(licenseRepository).deleteById(toDelete.getId());
     }
 }
