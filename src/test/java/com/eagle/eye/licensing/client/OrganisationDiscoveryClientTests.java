@@ -26,46 +26,43 @@
 
 package com.eagle.eye.licensing.client;
 
-import com.eagle.eye.licensing.model.Organisation;
-import lombok.AllArgsConstructor;
-import org.springframework.cloud.client.ServiceInstance;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
- * The Spring DiscoveryClient offers the lowest level of access to Ribbon and the services registered within it.
- * Using the DiscoveryClient, you can query for all the services registered with the ribbon client
- * and their corresponding URLs.
- * <p>
- * Created : 20/12/2022 09:30
+ * Created : 24/04/2023 09:23
  * Project : ea-licensing-service
  * IDE : IntelliJ IDEA
  *
  * @author CyberAlexander
  * @version 1.0
  */
-@Component
-@AllArgsConstructor
-public class OrganisationDiscoveryClient {
+@Slf4j
+@ActiveProfiles({"test"})
+@ExtendWith(MockitoExtension.class)
+class OrganisationDiscoveryClientTests {
 
+    @Mock
     private DiscoveryClient discoveryClient;
 
-    public Organisation getOrganisation(UUID organisationId) {
-        RestTemplate restTemplate = new RestTemplate();
-        List<ServiceInstance> instances = discoveryClient.getInstances("ea-organisation-service");
+    @InjectMocks
+    @MockBean
+    private OrganisationDiscoveryClient organisationDiscoveryClient;
 
-        if (instances.isEmpty()) return null;
-        String serviceUrl = String.format("%s/v1/organisations/%s", instances.get(0).getUri().toString(), organisationId);
-
-        ResponseEntity<Organisation> restExchange = restTemplate.exchange(
-                serviceUrl, HttpMethod.GET, null, Organisation.class, organisationId
-        );
-        return restExchange.getBody();
+    @Test
+    void testGetOrganisation() {
+        Mockito.when(discoveryClient.getInstances("ea-organisation-service")).thenReturn(Mockito.anyList());
+        organisationDiscoveryClient.getOrganisation(UUID.randomUUID());
+        Mockito.verify(discoveryClient).getInstances("ea-organisation-service");
     }
 }
