@@ -55,8 +55,8 @@ class OrganisationDiscoveryClientTests {
     @Mock
     private DiscoveryClient discoveryClient;
 
-    @InjectMocks
     @MockBean
+    @InjectMocks
     private OrganisationDiscoveryClient organisationDiscoveryClient;
 
     @Test
