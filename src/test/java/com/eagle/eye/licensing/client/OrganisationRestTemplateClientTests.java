@@ -28,12 +28,14 @@ package com.eagle.eye.licensing.client;
 
 import com.eagle.eye.licensing.model.Organisation;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.internal.verification.Times;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
@@ -72,14 +74,31 @@ class OrganisationRestTemplateClientTests {
                 R.nextObject(String.class), R.nextObject(String.class), R.nextObject(String.class));
         UUID organisationId = expected.id();
 
-        Mockito.when(restTemplate.exchange(
-                "http://ea-organisation-service/v1/organizations/{organizationId}",
-                HttpMethod.GET,
-                null, Organisation.class, organisationId))
+        Mockito.when(restTemplate.exchange("http://ea-organisation-service/v1/organizations/{organizationId}",
+                        HttpMethod.GET, null, Organisation.class, organisationId))
                 .thenReturn(new ResponseEntity<>(expected, HttpStatusCode.valueOf(200)));
 
-        Organisation organisation = organisationRestTemplateClient.getOrganisation(organisationId);
+        Organisation actual = organisationRestTemplateClient.getOrganisation(organisationId);
 
-        log.info("{}", organisation);
+        Assertions.assertThat(expected).isEqualTo(actual);
+    }
+
+    @Test
+    void testGetOrganisation_VerifyRestTemplateInvoked() {
+        Organisation expected = new Organisation(UUID.randomUUID(), R.nextObject(String.class),
+                R.nextObject(String.class), R.nextObject(String.class), R.nextObject(String.class));
+        UUID organisationId = expected.id();
+
+        Mockito.when(restTemplate.exchange("http://ea-organisation-service/v1/organizations/{organizationId}",
+                        HttpMethod.GET, null, Organisation.class, organisationId))
+                .thenReturn(new ResponseEntity<>(expected, HttpStatusCode.valueOf(200)));
+
+        organisationRestTemplateClient.getOrganisation(organisationId);
+
+        Mockito.verify(restTemplate, new Times(1))
+                .exchange(
+                        "http://ea-organisation-service/v1/organizations/{organizationId}",
+                        HttpMethod.GET, null, Organisation.class, organisationId
+                );
     }
 }
